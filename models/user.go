@@ -2,6 +2,6 @@ package models
 
 // User represents a user entity in the system
 type User struct {
-	ID   int
-	Name string
+	ID   int    `db:id, primary`
+	Name string `db:"name"`
 }

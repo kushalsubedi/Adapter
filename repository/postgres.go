@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	"project/models"
 )
 
@@ -12,8 +13,15 @@ type PostgresRepo struct {
 }
 
 // NewPostgresRepo creates a new PostgreSQL repository
-func NewPostgresRepo(db *sql.DB) *PostgresRepo {
-	return &PostgresRepo{db: db}
+func NewPostgresRepo(db *sql.DB) (*PostgresRepo, error) {
+	repo := &PostgresRepo{db: db}
+
+	// auto-migrate on startup
+	if err := repo.AutoMigrate(models.User{}); err != nil {
+		return nil, err
+	}
+
+	return repo, nil
 }
 
 // Create inserts a new user into PostgreSQL database
@@ -25,12 +33,12 @@ func (p *PostgresRepo) Create(user models.User) error {
 	if err != nil {
 		return fmt.Errorf("failed to insert user: %w", err)
 	}
-	
+
 	rows, err := res.RowsAffected()
 	if err != nil {
 		return fmt.Errorf("failed to get rows affected: %w", err)
 	}
-	
+
 	fmt.Println("Inserted rows:", rows)
 	return nil
 }

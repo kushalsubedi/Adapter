@@ -28,8 +28,11 @@ func main() {
 	defer db.Close()
 
 	// Initialize repository
-	repo := repository.NewPostgresRepo(db)
-	
+	repo, err := repository.NewPostgresRepo(db)
+	if err != nil {
+		fmt.Print("Error migrating Database")
+	}
+
 	// Uncomment to use MySQL instead:
 	// mysqlConfig := config.DatabaseConfig{
 	// 	Host:     "localhost",
@@ -55,7 +58,7 @@ func main() {
 	// if err := userService.RegisterUser("DevOps"); err != nil {
 	// 	log.Printf("Failed to register user: %v", err)
 	// }
-
+	//
 	// List all users
 	users, err := userService.ListUsers()
 	if err != nil {
